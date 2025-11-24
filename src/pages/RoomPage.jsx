@@ -3,6 +3,7 @@ import Editor from "@monaco-editor/react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { connectSocket, getSocket } from "../services/socket";
 import { getRoom, executeCode } from "../services/api";
+import PresenceBar from "../components/PresenceBar";
 import Toast from "../components/Toast";
 import "./room.css";
 
@@ -26,7 +27,7 @@ export default function RoomPage(){
   useEffect(()=> {
     (async ()=> {
       try {
-        const r = await getRoom(roomId);
+        const r = await getRoom(roomId,user);
         if(!r) {
           setError("Room not found");
           return;
@@ -66,6 +67,8 @@ export default function RoomPage(){
   function sendMessage(){
     if(!chatText.trim() || !socketRef.current) return;
     const msg = { roomId, username: user.username, text: chatText, timestamp: new Date() };
+    console.log("[v0] Sending chat message:", msg);
+
     socketRef.current.emit("send-chat", msg);
     setChatText("");
   }
@@ -73,23 +76,26 @@ export default function RoomPage(){
   function onCodeChange(v){
     setCode(v);
     if(socketRef.current) {
+      console.log("[v0] Emitting code change"+v);
+      
       socketRef.current.emit("code-change", { roomId, code: v });
     }
   }
+
 
   async function run() {
     try {
       setRunning(true);
       setOutput("");
       setError("");
-      console.log("[v0] Executing code with language:", room?.language);
+      console.log(" Executing code with language:", room?.language);
       
       const res = await executeCode({ 
         language: room?.language || "javascript", 
         code 
       });
       
-      console.log("[v0] Execution result:", res);
+      console.log(" Execution result:", res);
       setOutput(res.output || "Code executed successfully with no output");
       setToast({ message: "Code executed successfully!", type: "success" });
     } catch(err) {
@@ -144,6 +150,9 @@ export default function RoomPage(){
                 {u.username}
               </div>
             )) || <p className="empty-state">No participants yet</p>}
+  {/* console.log(" Room users:",);
+            <PresenceBar participants={user} /> */}
+          
           </div>
         </div>
 

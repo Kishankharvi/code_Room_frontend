@@ -1,4 +1,7 @@
 export default function PresenceBar({ participants }) {
+  console.log(participants)
+  console.log("Rendering PresenceBar with participants:", participants);
+  console.log("Number of participants:", participants.length);
   return (
     <div className="card">
       <h3 className="text-sm font-semibold text-gray-800 mb-2">

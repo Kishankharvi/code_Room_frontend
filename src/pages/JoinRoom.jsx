@@ -22,7 +22,7 @@ export default function JoinRoom(){
     }
     try {
       setLoading(true);
-      const r = await getRoom(roomId);
+      const r = await getRoom(roomId,user);
       if(r?.roomId) {
         nav(`/room/${roomId}`, { state: { user }});
       } else {

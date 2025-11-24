@@ -10,6 +10,9 @@ export const login = (payload) => api.post("/auth/login", payload).then(r => r.d
 export const createRoom = (userId, mode="one-to-one", maxUsers=2, language="javascript") =>
   api.post("/rooms/create", { userId, mode, maxUsers, language }).then(r => r.data);
 
-export const getRoom = (roomId) => api.get(`/rooms/${roomId}`).then(r => r.data);
+// export const getRoom = (roomId) => api.get(`/rooms/${roomId}`).then(r => r.data);
+
+export const getRoom = (roomId, user) =>
+  api.post(`/rooms/${roomId}/join`, { user }).then(r => r.data);
 
 export const executeCode = (payload) => api.post("/execute", payload).then(r => r.data);
